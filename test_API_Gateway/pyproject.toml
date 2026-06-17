@@ -1,5 +1,5 @@
 [project]
-name = "fake-api-gateway"
+name = "test-api-gateway"
 version = "0.1.0"
 description = ""
 authors = [
@@ -8,11 +8,10 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "httpx (>=0.28.1,<0.29.0)"
 ]
 
 [tool.poetry]
-packages = [{include = "fake_api_gateway", from = "src"}]
+packages = [{include = "test_api_gateway", from = "src"}]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

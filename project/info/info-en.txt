@@ -1,0 +1,92 @@
+============
+config.py
+============
+Centralised configuration loaded from environment variables via pydantic-settings.
+
+
+====================
+create_content.py
+====================
+Generates notification content (subject, HTML body, plain-text body, VK message)
+using Jinja2 templates.
+
+Template resolution:
+  templates/<notification_type>_email.html  - rich HTML for email
+  templates/<notification_type>_email.txt   - plain-text fallback for email
+  templates/<notification_type>_vk.txt      - short text for VK message
+
+ContentBuilder.build() returns a dict with keys:
+  subject, body_html, body_text, vk_text
+
+
+==============
+database.py
+==============
+Async database engine and session factory.
+
+Supports both SQLite (prototype) and PostgreSQL (production).
+The DATABASE_URL environment variable controls which backend is used.
+
+
+=========
+main.py
+=========
+Entry point for the Notification Module microservice.
+
+Responsibilities:
+- FastAPI application initialization
+- Lifespan manager (startup/shutdown hooks for DB and Redis)
+- All HTTP endpoint definitions
+- Request validation via Pydantic models
+- Immediate acknowledgement + background queue dispatch
+
+
+============
+models.py
+============
+Data layer for the Notification Module.
+
+Contains:
+- Enumerations for notification types, statuses, and channels
+- SQLAlchemy ORM models (NotificationRecord, NotificationSettings)
+- Pydantic schemas for request/response validation
+
+
+=================
+redis_queue.py
+=================
+Task queue implementation using Redis lists (BLPOP/RPUSH pattern).
+
+Architecture:
+  - Producers call `enqueue_notification()` to push JSON-serialised tasks onto a Redis list (FIFO queue).
+  - Workers call `run_worker()` which loops on BLPOP and processes tasks concurrently using asyncio.
+  - Failed tasks are re-enqueued with exponential backoff up to MAX_RETRY_ATTEMPTS, after which the database record is marked FAILED.
+
+No external Celery dependency is required; this keeps the stack minimal and
+cross-platform.  A Celery drop-in is straightforward if needed (see comments).
+
+
+=======================
+send_notification.py
+=======================
+Business logic layer: routes a notification to the correct delivery channel(s).
+
+Responsibilities:
+  1. Determine which channels to use (from request + user settings).
+  2. Call the appropriate sender (EmailSender or VKSender).
+  3. Raise exceptions on delivery failure so the queue can retry.
+
+Channel resolution order:
+  - If request.channel == "all" -> send to every enabled and configured channel.
+  - If request.channel == "email" -> email only.
+  - If request.channel == "vk" -> VK only.
+
+
+===========
+worker.py
+===========
+Standalone worker process entry point.
+Run separately from the FastAPI server to process the notification queue:
+The worker uses the same config.py and Redis settings as main.py.
+It is designed to be run as a separate process or systemd service.
+Multiple worker instances can run in parallel against the same Redis queue.
