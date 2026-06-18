@@ -114,7 +114,7 @@ class ContentBuilder:
         if "new_assignment" in template_name:
             name = student.full_name if student else "Student"
             return (
-                f"Dear {name},\n\n"
+                f"Уважаемый(ая) {name},\n\n"
                 f"A new assignment '{assignment.title}' has been published in topic '{assignment.topic}'.\n"
                 f"Deadline: {assignment.deadline or 'not specified'}.\n\n"
                 "Humanitarian University"
@@ -122,7 +122,7 @@ class ContentBuilder:
         if "deadline_student" in template_name:
             name = student.full_name if student else "Student"
             return (
-                f"Dear {name},\n\n"
+                f"Уважаемый(ая) {name},\n\n"
                 f"This is a reminder that the deadline for '{assignment.title}' is approaching.\n"
                 f"Deadline: {assignment.deadline}.\n\n"
                 "Please submit your work before the deadline.\n\n"
@@ -134,7 +134,7 @@ class ContentBuilder:
             submitted = ", ".join(submission.submitted) if submission else "-"
             not_submitted = ", ".join(submission.not_submitted) if submission else "-"
             return (
-                f"Dear {name},\n\n"
+                f"Уважаемый(ая) {name},\n\n"
                 f"Submission status for '{assignment.title}' (deadline: {assignment.deadline}):\n\n"
                 f"Submitted ({len(submission.submitted) if submission else 0}): {submitted}\n"
                 f"Not submitted ({len(submission.not_submitted) if submission else 0}): {not_submitted}\n\n"
@@ -144,7 +144,7 @@ class ContentBuilder:
             name = student.full_name if student else "Student"
             grade = f"{assignment.grade}/{assignment.max_grade}" if assignment.grade is not None else "N/A"
             return (
-                f"Dear {name},\n\n"
+                f"Уважаемый(ая) {name},\n\n"
                 f"Your assignment '{assignment.title}' has been reviewed.\n"
                 f"Grade: {grade}\n"
                 f"Feedback: {assignment.feedback or 'No feedback provided.'}\n\n"
@@ -197,8 +197,8 @@ def _default_templates() -> dict[str, str]:
 
     footer_html = """\
 <div class="footer">
-  Humanitarian University &mdash; Automated Notification System<br>
-  This message was generated automatically. Please do not reply.
+  АНО ВО &quot;Гуманитарный Университет&quot; &mdash; Система автоматической рассылки<br>
+  Это сообщение было сгенерировано автоматически. Пожалуйста, не отвечайте.
 </div>
 </div></body></html>
 """
@@ -211,41 +211,42 @@ def _default_templates() -> dict[str, str]:
     templates["new_assignment_email.html"] = (
         base_html
         + """\
-<div class="header"><h2>New Assignment Published</h2></div>
-<p>Dear <strong>{{ student.full_name }}</strong>,</p>
-<p>A new programming assignment has been published for your group <strong>{{ student.group }}</strong>.</p>
+<div class="header"><h2>Опубликовано новое задание</h2></div>
+<p>Уважаемый(ая) <strong>{{ student.full_name }}</strong>,</p>
+<p>Для вашей <strong>{{ student.group }}</strong> группы опубликовано новое задание по программированию.</p>
 <table>
-  <tr><th>Assignment</th><td>{{ assignment.title }}</td></tr>
-  <tr><th>Topic</th><td>{{ assignment.topic }}</td></tr>
+  <tr><th>Задание</th><td>{{ assignment.title }}</td></tr>
+  <tr><th>Тема</th><td>{{ assignment.topic }}</td></tr>
   {% if assignment.deadline %}
-  <tr><th>Deadline</th><td>{{ assignment.deadline }}</td></tr>
+  <tr><th>Срок сдачи</th><td>{{ assignment.deadline }}</td></tr>
   {% endif %}
 </table>
-<p>Please log in to the system to view the full assignment details.</p>
+<p>Для просмотра полной информации о задании, пожалуйста, войдите в систему.</p>
 """
         + footer_html
     )
 
     templates["new_assignment_email.txt"] = """\
-Dear {{ student.full_name }},
+Уважаемый(ая) {{ student.full_name }},
 
-A new programming assignment has been published for your group {{ student.group }}.
+Для вашей {{ student.group }} группы опубликовано новое задание по программированию.
 
-Assignment : {{ assignment.title }}
-Topic      : {{ assignment.topic }}
-{% if assignment.deadline %}Deadline   : {{ assignment.deadline }}{% endif %}
+Задание : {{ assignment.title }}
+Тема : {{ assignment.topic }}
+{% if assignment.deadline %}Срок сдачи : {{ assignment.deadline }}{% endif %}
 
-Please log in to the system to view the full assignment details.
+Для просмотра полной информации о задании, пожалуйста, войдите в систему.
 
-Humanitarian University -- Automated Notification System
+АНО ВО \"Гуманитарный университет\" -- Система автоматической рассылки
 """
 
     templates["new_assignment_vk.txt"] = """\
-Dear {{ student.full_name }}, a new assignment has been published.
-Assignment: {{ assignment.title }}
-Topic: {{ assignment.topic }}
-{% if assignment.deadline %}Deadline: {{ assignment.deadline }}{% endif %}
-Please log in to the educational portal for details.
+Уважаемый(ая) {{ student.full_name }}, опубликовано новое задание по программированию.
+Задание: {{ assignment.title }}
+Тема: {{ assignment.topic }}
+{% if assignment.deadline %}Срок сдачи: {{ assignment.deadline }}{% endif %}
+
+Для просмотра полной информации о задании, пожалуйста, войдите в систему.
 """
 
     # ------------------------------------------------------------------ 
@@ -254,36 +255,36 @@ Please log in to the educational portal for details.
     templates["deadline_student_email.html"] = (
         base_html
         + """\
-<div class="header"><h2>Deadline Reminder</h2></div>
-<p>Dear <strong>{{ student.full_name }}</strong>,</p>
-<p>This is an automated reminder that the deadline for your assignment is approaching.</p>
+<div class="header"><h2>Напоминание о дедлайне</h2></div>
+<p>Уважаемый(ая) <strong>{{ student.full_name }}</strong>,</p>
+<p>Это автоматическое напоминание о приближении крайнего срока сдачи вашего задания.</p>
 <table>
-  <tr><th>Assignment</th><td>{{ assignment.title }}</td></tr>
-  <tr><th>Topic</th><td>{{ assignment.topic }}</td></tr>
-  <tr><th>Deadline</th><td><strong>{{ assignment.deadline }}</strong></td></tr>
+  <tr><th>Задание</th><td>{{ assignment.title }}</td></tr>
+  <tr><th>Тема</th><td>{{ assignment.topic }}</td></tr>
+  <tr><th>Срок сдачи</th><td><strong>{{ assignment.deadline }}</strong></td></tr>
 </table>
-<p>If you have already submitted, please disregard this message.</p>
+<p>Если вы уже сдали задание, пожалуйста, проигнорируйте это сообщение.</p>
 """
         + footer_html
     )
 
     templates["deadline_student_email.txt"] = """\
-Dear {{ student.full_name }},
+Уважаемый(ая) {{ student.full_name }},
 
-This is a reminder that the deadline for your assignment is approaching.
+Это автоматическое напоминание о приближении крайнего срока сдачи вашего задания.
 
-Assignment : {{ assignment.title }}
-Topic      : {{ assignment.topic }}
-Deadline   : {{ assignment.deadline }}
+Задание:    {{ assignment.title }}
+Тема:       {{ assignment.topic }}
+Срок сдачи: {{ assignment.deadline }}
 
-If you have already submitted, please disregard this message.
+Если вы уже сдали задание, пожалуйста, проигнорируйте это сообщение.
 
-Humanitarian University -- Automated Notification System
+АНО ВО \"Гуманитарный университет\" -- Система автоматической рассылки
 """
 
     templates["deadline_student_vk.txt"] = """\
-Reminder, {{ student.full_name }}! The deadline for "{{ assignment.title }}" is {{ assignment.deadline }}.
-Submit your work on time.
+Уважаемый(ая), {{ student.full_name }}, напоминаем! Срок сдачи задания "{{ assignment.title }}" - {{ assignment.deadline }}.
+Сдайте свою работу вовремя.
 """
 
     # ------------------------------------------------------------------
@@ -292,51 +293,51 @@ Submit your work on time.
     templates["deadline_teacher_email.html"] = (
         base_html
         + """\
-<div class="header"><h2>Assignment Deadline Summary</h2></div>
-<p>Dear <strong>{{ teacher.full_name }}</strong>,</p>
-<p>Below is the submission status for the assignment that has reached its deadline.</p>
+<div class="header"><h2>Сводка по заданию</h2></div>
+<p>Уважаемый(ая) <strong>{{ teacher.full_name }}</strong>,</p>
+<p>Ниже приведена сводка по итогам задания, срок выполнения которого истек.</p>
 <table>
-  <tr><th>Assignment</th><td>{{ assignment.title }}</td></tr>
-  <tr><th>Topic</th><td>{{ assignment.topic }}</td></tr>
-  <tr><th>Deadline</th><td>{{ assignment.deadline }}</td></tr>
+  <tr><th>Задание</th><td>{{ assignment.title }}</td></tr>
+  <tr><th>Тема</th><td>{{ assignment.topic }}</td></tr>
+  <tr><th>Срок сдачи</th><td>{{ assignment.deadline }}</td></tr>
 </table>
 
 {% if submission %}
-<h3>Submitted ({{ submission.submitted | length }})</h3>
+<h3>Сдали&#58; ({{ submission.submitted | length }})</h3>
 {% if submission.submitted %}
 <ul>{% for s in submission.submitted %}<li>{{ s }}</li>{% endfor %}</ul>
-{% else %}<p>None</p>{% endif %}
+{% else %}<p>Никто.</p>{% endif %}
 
-<h3>Not Submitted ({{ submission.not_submitted | length }})</h3>
+<h3>Не сдали&#58; ({{ submission.not_submitted | length }})</h3>
 {% if submission.not_submitted %}
 <ul>{% for s in submission.not_submitted %}<li>{{ s }}</li>{% endfor %}</ul>
-{% else %}<p>All students submitted.</p>{% endif %}
+{% else %}<p>Все студенты сдали.</p>{% endif %}
 {% endif %}
 """
         + footer_html
     )
 
     templates["deadline_teacher_email.txt"] = """\
-Dear {{ teacher.full_name }},
+Уважаемый(ая) {{ teacher.full_name }},
 
-Submission status for "{{ assignment.title }}" (Deadline: {{ assignment.deadline }}):
+Статус по заданию "{{ assignment.title }}" (Срок сдачи: {{ assignment.deadline }}):
 
-Submitted ({{ submission.submitted | length }}):
+Сдали ({{ submission.submitted | length }}):
 {% for s in submission.submitted %}  - {{ s }}
-{% else %}  None
+{% else %}  никто
 {% endfor %}
-Not Submitted ({{ submission.not_submitted | length }}):
+Не сдали ({{ submission.not_submitted | length }}):
 {% for s in submission.not_submitted %}  - {{ s }}
-{% else %}  All students submitted.
+{% else %}  все сдали.
 {% endfor %}
 
-Humanitarian University -- Automated Notification System
+АНО ВО \"Гуманитарный университет\" -- Система автоматической рассылки
 """
 
     templates["deadline_teacher_vk.txt"] = """\
-{{ teacher.full_name }}, deadline summary for "{{ assignment.title }}":
-Submitted: {{ submission.submitted | join(", ") or "none" }}
-Not submitted: {{ submission.not_submitted | join(", ") or "all submitted" }}
+Уважаемый(ая) {{ teacher.full_name }}, сводка по итогам задания "{{ assignment.title }}":
+Сдали: {{ submission.submitted | join(", ") or "никто" }}
+Не сдали: {{ submission.not_submitted | join(", ") or "все сдали" }}
 """
 
     # ------------------------------------------------------------------
@@ -345,19 +346,19 @@ Not submitted: {{ submission.not_submitted | join(", ") or "all submitted" }}
     templates["review_result_email.html"] = (
         base_html
         + """\
-<div class="header"><h2>Assignment Graded</h2></div>
-<p>Dear <strong>{{ student.full_name }}</strong>,</p>
-<p>Your instructor has reviewed your assignment submission.</p>
+<div class="header"><h2>Работа оценена</h2></div>
+<p>Уважаемый(ая) <strong>{{ student.full_name }}</strong>,</p>
+<p>Ваш преподаватель проверил вашу работу.</p>
 <table>
-  <tr><th>Assignment</th><td>{{ assignment.title }}</td></tr>
-  <tr><th>Topic</th><td>{{ assignment.topic }}</td></tr>
+  <tr><th>Задание</th><td>{{ assignment.title }}</td></tr>
+  <tr><th>Тема</th><td>{{ assignment.topic }}</td></tr>
   {% if assignment.grade is not none %}
-  <tr><th>Grade</th>
+  <tr><th>Оценка</th>
       <td><span class="grade-box">{{ assignment.grade }}{% if assignment.max_grade %} / {{ assignment.max_grade }}{% endif %}</span></td>
   </tr>
   {% endif %}
   {% if assignment.feedback %}
-  <tr><th>Feedback</th><td>{{ assignment.feedback }}</td></tr>
+  <tr><th>Комментарий</th><td>{{ assignment.feedback }}</td></tr>
   {% endif %}
 </table>
 """
@@ -365,22 +366,22 @@ Not submitted: {{ submission.not_submitted | join(", ") or "all submitted" }}
     )
 
     templates["review_result_email.txt"] = """\
-Dear {{ student.full_name }},
+Уважаемый(ая) {{ student.full_name }},
 
-Your instructor has reviewed your assignment submission.
+Ваш преподаватель проверил вашу работу.
 
-Assignment : {{ assignment.title }}
-Topic      : {{ assignment.topic }}
-{% if assignment.grade is not none %}Grade      : {{ assignment.grade }}{% if assignment.max_grade %} / {{ assignment.max_grade }}{% endif %}{% endif %}
-{% if assignment.feedback %}Feedback   : {{ assignment.feedback }}{% endif %}
+Задание     : {{ assignment.title }}
+тема        : {{ assignment.topic }}
+{% if assignment.grade is not none %}Оценка     : {{ assignment.grade }}{% if assignment.max_grade %} / {{ assignment.max_grade }}{% endif %}{% endif %}
+{% if assignment.feedback %}Комментарий : {{ assignment.feedback }}{% endif %}
 
-Humanitarian University -- Automated Notification System
+АНО ВО \"Гуманитарный университет\" -- Система автоматической рассылки
 """
 
     templates["review_result_vk.txt"] = """\
-{{ student.full_name }}, your assignment "{{ assignment.title }}" has been graded.
-{% if assignment.grade is not none %}Grade: {{ assignment.grade }}{% if assignment.max_grade %}/{{ assignment.max_grade }}{% endif %}{% endif %}
-{% if assignment.feedback %}Feedback: {{ assignment.feedback }}{% endif %}
+Уважаемый(ая) {{ student.full_name }}, ваша работа "{{ assignment.title }}" была оценена.
+{% if assignment.grade is not none %}Оценка: {{ assignment.grade }}{% if assignment.max_grade %}/{{ assignment.max_grade }}{% endif %}{% endif %}
+{% if assignment.feedback %}Комментарий: {{ assignment.feedback }}{% endif %}
 """
 
     return templates

@@ -1,0 +1,2 @@
+Уважаемый(ая), {{ student.full_name }}, напоминаем! Срок сдачи задания "{{ assignment.title }}" - {{ assignment.deadline }}.
+Сдайте свою работу вовремя.

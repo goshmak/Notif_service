@@ -1,0 +1,4 @@
+Уважаемый(ая) {{ student.full_name }}, ваша работа "{{ assignment.title }}" была оценена.
+{% if assignment.grade is not none %}Оценка: {{ assignment.grade }}{% if assignment.max_grade %}/{{ assignment.max_grade }}{% endif %}{% endif %}
+
+{% if assignment.feedback %}Комментарий: {{ assignment.feedback }}{% endif %}

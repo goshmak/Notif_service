@@ -1,0 +1,3 @@
+Уважаемый(ая) {{ teacher.full_name }}, сводка по итогам задания "{{ assignment.title }}":
+Сдали: {{ submission.submitted | join(", ") or "никто" }}
+Не сдали: {{ submission.not_submitted | join(", ") or "все сдали" }}

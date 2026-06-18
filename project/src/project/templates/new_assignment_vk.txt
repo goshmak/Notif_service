@@ -1,0 +1,6 @@
+Уважаемый(ая) {{ student.full_name }}, опубликовано новое задание по программированию.
+Задание: {{ assignment.title }}
+Тема: {{ assignment.topic }}
+{% if assignment.deadline %}Срок сдачи: {{ assignment.deadline }}{% endif %}
+
+Для просмотра полной информации о задании, пожалуйста, войдите в систему.
