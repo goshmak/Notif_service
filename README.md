@@ -21,7 +21,7 @@
 
 ## 1. Структура проекта
 
-```text
+```txt
 notification_module/
 |
 |-- main.py # Приложение FastAPI, все HTTP-эндпоинты, менеджер жизненного цикла
@@ -329,7 +329,7 @@ PENDING и обрабатываются после запуска воркера
 
 9.5 Обновление настроек пользователя
 
-```text
+```txt
 PUT /notifications/settings/student-001
 
 {
