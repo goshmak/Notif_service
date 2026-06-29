@@ -21,6 +21,7 @@
 
 ## 1. Структура проекта
 
+```text
 notification_module/
 |
 |-- main.py # Приложение FastAPI, все HTTP-эндпоинты, менеджер жизненного цикла
@@ -52,8 +53,7 @@ notification_module/
 |-- logs/ # Файлы журналов (создаются автоматически)
 |-- app.log
 |-- worker.log
-text
-
+```
 
 ---
 
@@ -125,44 +125,51 @@ mkdir logs
 5. Конфигурация
 
 Отредактируйте .env (скопируйте из .env.example). Минимально необходимое для рабочего прототипа:
-ini
 
+```ini
 # Настройки прототипа по умолчанию (SQLite + Redis на локальном хосте, без учетных данных email/VK)
 DATABASE_URL=sqlite+aiosqlite:///./notifications.db
 REDIS_URL=redis://localhost:6379/0
+```
 
 Для доставки по электронной почте укажите:
-ini
 
+```ini
 SMTP_HOST=smtp.yandex.ru
 SMTP_PORT=465
 SMTP_USE_SSL=true
 SMTP_USERNAME=your@yandex.ru
 SMTP_PASSWORD=ваш-пароль-приложения
 SMTP_FROM_EMAIL=your@yandex.ru
+```
 
 Для доставки через VK укажите:
-ini
 
+```ini
 VK_API_TOKEN=vk1.a.ваш_токен_здесь
 VK_GROUP_ID=123456789
+```
 
 Если учетные данные отсутствуют, модуль работает в заглушечном режиме: уведомления
 записываются в журнал, но фактически не отправляются. Это позволяет проводить полное
 сквозное тестирование очереди, логики повторных попыток и сохранения в базе данных
 без внешних зависимостей.
+
 6. Запуск приложения (API-сервер)
 Linux / macOS
-bash
 
+```bash
 source venv/bin/activate
 uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+```
 
 Windows
-powershell
+
+```powershell
 
 venv\Scripts\activate
 uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+```
 
 API будет доступен по адресам:
 
@@ -176,16 +183,18 @@ API будет доступен по адресам:
 
 Воркер должен запускаться как отдельный процесс (в отдельном окне терминала):
 Linux / macOS
-bash
 
+```bash
 source venv/bin/activate
 python worker.py
+```
 
 Windows
-powershell
 
+```powershell
 venv\Scripts\activate
 python worker.py
+```
 
 Воркер забирает задачи из очереди Redis и доставляет их через настроенные
 каналы. Без запущенного воркера задачи накапливаются в очереди со статусом
@@ -218,8 +227,8 @@ PENDING и обрабатываются после запуска воркера
 
 9. Примеры полезных нагрузок для уведомлений
 9.1 Новое задание (для студента)
-json
 
+```json
 {
   "notification_type": "new_assignment",
   "recipient_id": "student-001",
@@ -238,10 +247,11 @@ json
     "vk_user_id": "12345678"
   }
 }
+```
 
 9.2 Напоминание о дедлайне (для студента)
-json
 
+```json
 {
   "notification_type": "deadline_student",
   "recipient_id": "student-001",
@@ -259,10 +269,11 @@ json
     "email": "student@example.com"
   }
 }
+```
 
 9.3 Сводка по дедлайнам (для преподавателя)
-json
 
+```json
 {
   "notification_type": "deadline_teacher",
   "recipient_id": "teacher-001",
@@ -288,10 +299,11 @@ json
     ]
   }
 }
+```
 
 9.4 Оценка за задание (для студента)
-json
 
+```json
 {
   "notification_type": "review_result",
   "recipient_id": "student-001",
@@ -313,10 +325,11 @@ json
     "vk_user_id": "12345678"
   }
 }
+```
 
 9.5 Обновление настроек пользователя
-text
 
+```text
 PUT /notifications/settings/student-001
 
 {
@@ -324,6 +337,7 @@ PUT /notifications/settings/student-001
   "vk_enabled": false,
   "email_address": "newemail@example.com"
 }
+```
 
 10. Примечания по базе данных
 SQLite (по умолчанию, прототип)
@@ -332,29 +346,30 @@ SQLite (по умолчанию, прототип)
 в папке проекта при первом запуске.
 
 Для просмотра базы данных:
-bash
 
+```bash
 # Linux
 sqlite3 notifications.db "SELECT task_id, status, notification_type FROM notification_records LIMIT 10;"
 
 # Windows (если sqlite3.exe есть в PATH)
 sqlite3.exe notifications.db "SELECT task_id, status FROM notification_records;"
+```
 
 PostgreSQL (продакшен)
 
     Создайте базу данных:
 
-sql
-
+```sql
 CREATE DATABASE notifications_db;
 CREATE USER notifications_user WITH PASSWORD 'secret';
 GRANT ALL PRIVILEGES ON DATABASE notifications_db TO notifications_user;
+```
 
     Обновите .env:
 
-ini
-
+```ini
 DATABASE_URL=postgresql+asyncpg://notifications_user:secret@localhost:5432/notifications_db
+```
 
     Таблицы создаются автоматически при запуске (SQLAlchemy create_all).
 
