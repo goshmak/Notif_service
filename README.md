@@ -367,13 +367,13 @@ CREATE USER notifications_user WITH PASSWORD 'secret';
 GRANT ALL PRIVILEGES ON DATABASE notifications_db TO notifications_user;
 ```
 
-    Обновите .env:
+Обновите .env:
 
 ```ini
 DATABASE_URL=postgresql+asyncpg://notifications_user:secret@localhost:5432/notifications_db
 ```
 
-    Таблицы создаются автоматически при запуске (SQLAlchemy create_all).
+Таблицы создаются автоматически при запуске (SQLAlchemy create_all).
 
 11. Устранение неполадок
 Отказ в подключении к Redis
